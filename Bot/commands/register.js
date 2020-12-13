@@ -50,7 +50,7 @@ module.exports.run = async (bot, msg, args) => {
 
         registermember.roles.add(["756481115036057682", "756212468308508693", "756209885955358851", "756211270176211055", "756212842469916723", "756404346975158285", "756215825790140496"]);
         registermember.setNickname(args[0].replace("-", " "));
-        
+
         var embed = new Discord.MessageEmbed()
             .setTitle(args[0].replace("-", " "))
             .setColor("GREY")
