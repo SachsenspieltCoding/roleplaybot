@@ -1,0 +1,23 @@
+{
+  "name": "just-another-discord-bot",
+  "version": "0.0.1",
+  "description": "Just another Discord Bot like the others",
+  "main": "main.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sachsenspielt96/just-another-discord-bot.git"
+  },
+  "author": "Sachsenspielt",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Sachsenspielt96/just-another-discord-bot/issues"
+  },
+  "homepage": "https://github.com/Sachsenspielt96/just-another-discord-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "fs": "0.0.1-security"
+  }
+}

@@ -1,0 +1,4 @@
+100 - Command Not Found
+101 - User Not Found
+
+200 - Missing Permission
