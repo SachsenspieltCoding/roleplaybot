@@ -51,7 +51,7 @@ bot.on("ready", () => {
 //CHECK SERVERS AND UPDATE STATUS
 setInterval(() => {
 
-    bot.user.setPresence({ status: "online", activity:{ name: bot.guilds.cache.size + " Servern", type: "LISTENING" } });
+    bot.user.setPresence({ status: "online", activity:{ name: "verstecken auf Ls19 Roleplay Projekt | Prefix: " +  PREFIX, type: "PLAYING" } });
 
 }, 6000);
 
@@ -85,6 +85,41 @@ bot.on("message", async msg => {
         msg.channel.send(embed);
         msg.delete();
 
+    }
+
+})
+
+//MEMBER JOIN MESSAGE
+bot.on("guildMemberAdd", member => {
+
+    let joinchannel = member.guild.systemChannel;
+
+    if(joinchannel) {
+
+        const embed = new Discord.MessageEmbed()
+            .setTitle("Neuer User gejoint!")
+            .setDescription("Der User " + member.user.tag + " ist soeben zu uns eingeflogen! Willkommen <3")
+            .setFooter(bot.user.tag + " | Usercount: " + member.guild.memberCount)
+            .setColor("GREEN");
+
+        joinchannel.send(embed);
+    }
+
+})
+
+bot.on("guildMemberRemove", member => {
+
+    let leftchannel = member.guild.systemChannel;
+
+    if(leftchannel) {
+
+        const embed = new Discord.MessageEmbed()
+            .setTitle("Danke dass du da warst <3")
+            .setDescription("Der User " + member.user.tag + " hat uns leider verlassen! Bis bald!")
+            .setFooter(bot.user.tag + " | Usercount: " + member.guild.memberCount)
+            .setColor("RED");
+
+        leftchannel.send(embed);
     }
 
 })

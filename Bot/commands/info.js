@@ -40,11 +40,11 @@ module.exports.run = async (bot, msg, args) => {
                 .addField("Tag", user.user.tag, true)
                 .addField("Server betreten", user.joinedAt.getDay() + "." + user.joinedAt.getMonth() + "." + user.joinedAt.getFullYear(), true);
 
-            if(user.premiumSinceTimestamp !== null) {
+            try {
 
                 embed.addField("Boostet Server", user.premiumSince.getDay() + "." + user.premiumSince.getMonth() + "." + user.premiumSince.getFullYear(), true);
 
-            } else {
+            } catch (e) {
 
                 embed.addField("Boostet Server", "Server wird nicht geboostet");
 

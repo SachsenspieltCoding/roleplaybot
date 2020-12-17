@@ -40,9 +40,18 @@ module.exports.run = async (bot, msg, args) => {
     var database = msg.guild.channels.cache.get("725052251269235348");
     let job = "";
 
-    if (args.length !== 5) {
+    if (!args.length >= 5) {
 
-        //ERROR BAD ARGUMENTS
+        const embed = new Discord.MessageEmbed()
+            .setTitle("Upss... Hier ist etwas schiefgegangen")
+            .setColor("RED")
+            .setDescription("Etwas stimmt mit dem Befehl nicht... Bitte überprüfe alle angegebene Argumente!")
+            .addField("Fehlercode", "102 - BAD_ARGUMENTS")
+            .setFooter(msg.guild.name + " | " + msg.author.tag);
+
+        msg.channel.send(embed);
+        msg.delete();
+        return false;
 
     }
 
@@ -54,7 +63,7 @@ module.exports.run = async (bot, msg, args) => {
         var embed = new Discord.MessageEmbed()
             .setTitle(args[0].replace("-", " "))
             .setColor("GREY")
-            .setFooter("Registriert am: " + `${time.getDay()}.${time.getMonth()}.${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}` + " | Registriert durh: " + msg.author.username)
+            .setFooter("Registriert durch: " + msg.author.username)
             .addField("Alter", args[1]);
 
         switch (args[2]) {
@@ -89,6 +98,11 @@ module.exports.run = async (bot, msg, args) => {
                 registermember.roles.add("695295610483638305");
                 break;
 
+            case "FW":
+                job = "Feuerwehr";
+                registermember.roles.add("698838726989709382");
+                break;
+
             default:
                 const embed = new Discord.MessageEmbed()
                     .setTitle("Upss... Hier ist etwas schiefgegangen")
@@ -108,6 +122,12 @@ module.exports.run = async (bot, msg, args) => {
             .addField("Aktivität", args[3] + " Tag(e)")
             .addField("Reife", args[4])
             .addField("Discord Tag", registermember.user.tag);
+
+        if(args[5]) {
+
+            embed.addField("Sonstige Notizen", args.slice(5).join(" "));
+
+        }
 
         database.send(embed);
 
