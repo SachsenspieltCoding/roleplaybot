@@ -1,8 +1,36 @@
 //INIT LIBRARYS
 const Discord = require("discord.js");
+const fs = require("fs");
+const time = new Date();
 
 //COMMAND
-module.exports.run = async (bot, msg, args) => {
+module.exports.run = (bot, msg, args) => {
+
+    let file;
+    let ban_id;
+
+    ban_id = "#" + time.getFullYear().toString() + time.getMonth().toString() + time.getDay().toString() + time.getHours().toString() + time.getMinutes().toString() + time.getSeconds().toString()
+
+    // //READ BAN-ID FILE
+    // try {
+    //
+    //     let rawfile = require("Bot/data/ban-id.js");
+    //
+    // } catch (e) {
+    //
+    //     const embed = new Discord.MessageEmbed()
+    //         .setTitle("Upss... Hier ist etwas schiefgegangen")
+    //         .setColor("RED")
+    //         .setDescription("Ein schwerer unbekannter interner Fehler ist aufgetreten! Bitte umgehend das Serverteam informieren!")
+    //         .addField("Fehlercode", "0 - CRITICAL_ERROR")
+    //         .setFooter(msg.guild.name + " | " + msg.author.tag);
+    //
+    //     msg.channel.send(embed);
+    //     msg.delete();
+    //     return false;
+    //
+    // }
+
 
     if (!msg.member.permissions.has("BAN_MEMBERS")) {
 
@@ -34,7 +62,7 @@ module.exports.run = async (bot, msg, args) => {
 
     }
 
-    var banmember = msg.mentions.members.first();
+    const banmember = msg.mentions.members.first();
 
     //KICK MESSAGE TO KICK MEMBER
     try {
@@ -47,13 +75,18 @@ module.exports.run = async (bot, msg, args) => {
                 .setDescription("Du wurdest soeben von einem Server gebannt!")
                 .addField("Server", msg.guild.name)
                 .addField("Grund", args.slice(1).join(" "))
+                .addField("BanID", ban_id)
                 .addField("Gebannt durch", msg.author.tag)
+                .addField("Entbannung", "Um einen Entbannungsantrag zu stellen nutze dieses Formular: https://www.ls19-roleplay.tk/entbannung")
                 .setFooter("Banning Service vetrieben durch " + bot.user.username);
 
             dmchannel.send(embed);
-            dmchannel.delete();
 
             banmember.ban({ reason: args.slice(1).join(" ") });
+            // file[ban_id] = dmchannel;
+            //
+            // let data = JSON.stringify(file);
+            // fs.writeFileSync('Bot/db/ban-id.js', data);
 
         })
 
@@ -66,10 +99,11 @@ module.exports.run = async (bot, msg, args) => {
     const embed = new Discord.MessageEmbed()
         .setTitle("Benutzer erfolgreich gebannt!")
         .setColor("GREEN")
-        .addField("Gekickter Benutzer", banmember.user.tag)
+        .addField("Gebannter Benutzer", banmember.user.tag)
         .addField("Grund", args.slice(1).join(" "))
-        .addField("Gekickt durch", msg.author.tag)
-        .setFooter("Kicking Service vetrieben durch " + bot.user.username);
+        .addField("Gebannt durch", msg.author.tag)
+        .addField("BanID", ban_id)
+        .setFooter("Banning Service vetrieben durch " + bot.user.username);
 
     msg.channel.send(embed);
     msg.delete();
