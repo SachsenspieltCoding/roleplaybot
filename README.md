@@ -1,2 +1,2 @@
-# roleplay-bot
- The newer Version of BayLife19-Bot
+# roleplaybot
+ Official Discord bot for the LS22 Roleplay Project
