@@ -1,11 +1,15 @@
 //------------------------------------------------------------------------------
 // Import Libraries
 //------------------------------------------------------------------------------
-import { Client, Interaction } from 'discord.js'
-import fs from 'fs'
+import {
+  Client,
+  GuildMember,
+  Interaction,
+  MessageEmbed,
+  PartialGuildMember,
+} from 'discord.js'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
-import { SlashCommandBuilder } from '@discordjs/builders'
 import log4js, { Logger } from 'log4js'
 
 import * as CONFIG from './config.json'
@@ -13,7 +17,9 @@ import * as CONFIG from './config.json'
 //------------------------------------------------------------------------------
 // Init Dotenv & Discord.js
 //------------------------------------------------------------------------------
-const client: Client = new Client({ intents: [] })
+const client: Client = new Client({
+  intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_PRESENCES'],
+})
 const rest: REST = new REST({ version: '9' }).setToken(CONFIG.BOT_TOKEN)
 
 //------------------------------------------------------------------------------
@@ -33,6 +39,50 @@ client.login(CONFIG.BOT_TOKEN)
 //------------------------------------------------------------------------------
 client.on('ready', (): void => {
   logger.info(`${client.user!.tag} is ready!`)
+})
+
+client.on('guildMemberAdd', (member: GuildMember): void => {
+  var embed: MessageEmbed = new MessageEmbed({
+    title: 'Herzlich Willkommen!',
+    description: `Der User ${member.user.tag} ist gerade in ${member.guild.name} eingeflogen!`,
+    color: 'GREEN',
+    timestamp: new Date(),
+    thumbnail: {
+      url: member.user.displayAvatarURL({
+        format: 'png',
+        dynamic: true,
+        size: 1024,
+      }),
+    },
+    footer: {
+      text: `Aktuelle Useranzahl: ${member.guild.memberCount}`,
+      iconURL: client.user?.displayAvatarURL(),
+    },
+  })
+
+  member.guild.systemChannel?.send({ embeds: [embed] })
+})
+
+client.on('guildMemberRemove', (member): void => {
+  var embed: MessageEmbed = new MessageEmbed({
+    title: 'Schade, dass du gehst :(',
+    description: `Der User ${member.user.tag} hat soeben ${member.guild.name} verlassen!`,
+    color: 'RED',
+    timestamp: new Date(),
+    thumbnail: {
+      url: member.user.displayAvatarURL({
+        format: 'png',
+        dynamic: true,
+        size: 1024,
+      }),
+    },
+    footer: {
+      text: `Aktuelle Useranzahl: ${member.guild.memberCount}`,
+      iconURL: client.user?.displayAvatarURL(),
+    },
+  })
+
+  member.guild.systemChannel?.send({ embeds: [embed] })
 })
 
 //------------------------------------------------------------------------------
