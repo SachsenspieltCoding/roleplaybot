@@ -39,6 +39,10 @@ client.login(CONFIG.BOT_TOKEN)
 //------------------------------------------------------------------------------
 client.on('ready', (): void => {
   logger.info(`${client.user!.tag} is ready!`)
+  client.user?.setPresence({
+    status: 'online',
+    activities: [{ name: 'LS22 Roleplay Projekt', type: 'PLAYING' }],
+  })
 })
 
 client.on('guildMemberAdd', (member: GuildMember): void => {
