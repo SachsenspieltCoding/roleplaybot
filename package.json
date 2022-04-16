@@ -1,0 +1,22 @@
+{
+  "name": "roleplaybot",
+  "version": "1.0.0",
+  "description": "The official Discordbot for the \"Ls22 Roleplay Projekt\" server",
+  "main": "src/Bot.ts",
+  "repository": "git@github.com:SachsenspieltCoding/roleplaybot.git",
+  "author": "SACHSΞΠSPIΞLT <mail@sachsenspielt.de>",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
+    "discord-api-types": "^0.31.1",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "log4js": "^6.4.4",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  },
+  "scripts": {
+    "start": "ts-node src/Bot.ts"
+  }
+}
