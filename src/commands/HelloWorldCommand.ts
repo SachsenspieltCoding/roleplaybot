@@ -1,4 +1,4 @@
-import { Client, BaseCommandInteraction } from 'discord.js'
+import {BaseCommandInteraction, Client} from 'discord.js'
 import Command from 'src/Command'
 
 const HelloWorld: Command = {
@@ -6,9 +6,9 @@ const HelloWorld: Command = {
   description: 'Hallo Welt!',
   execute: async (client: Client, interaction: BaseCommandInteraction) => {
     await interaction.reply(
-      `Hallo Welt! Mein Name ist ${client.user!.tag}, deiner ist ${
-        interaction.user.tag
-      }!`
+        `Hallo Welt! Mein Name ist ${client.user!.tag}, deiner ist ${
+            interaction.user.tag
+        }!`
     )
   },
 }

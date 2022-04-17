@@ -1,6 +1,7 @@
 import Command from './Command'
-import HelloWorld from './commands/HelloWorld'
+import HelloWorld from './commands/HelloWorldCommand'
+import RegisterCommand from './commands/RegisterCommand'
 
-const commands: Command[] = [HelloWorld]
+const commands: Command[] = [HelloWorld, RegisterCommand]
 
 export default commands
