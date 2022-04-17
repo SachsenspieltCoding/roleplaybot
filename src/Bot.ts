@@ -1,18 +1,16 @@
 //------------------------------------------------------------------------------
 // Import Libraries
 //------------------------------------------------------------------------------
-import {
-  Client,
-  GuildMember,
-  Interaction,
-  MessageEmbed,
-  PartialGuildMember,
-} from 'discord.js'
-import { REST } from '@discordjs/rest'
-import { Routes } from 'discord-api-types/v9'
-import log4js, { Logger } from 'log4js'
+import {Client, GuildMember, Interaction, MessageEmbed,} from 'discord.js'
+import {REST} from '@discordjs/rest'
+import {Routes} from 'discord-api-types/v9'
+import log4js, {Logger} from 'log4js'
 
 import * as CONFIG from './config.json'
+//------------------------------------------------------------------------------
+// Bot Commands
+//------------------------------------------------------------------------------
+import commands from './CommandIndex'
 
 //------------------------------------------------------------------------------
 // Init Dotenv & Discord.js
@@ -20,7 +18,7 @@ import * as CONFIG from './config.json'
 const client: Client = new Client({
   intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_PRESENCES'],
 })
-const rest: REST = new REST({ version: '9' }).setToken(CONFIG.BOT_TOKEN)
+const rest: REST = new REST({version: '9'}).setToken(CONFIG.BOT_TOKEN)
 
 //------------------------------------------------------------------------------
 // Init Logger (log4js)
@@ -34,6 +32,16 @@ logger.level = 'debug'
 logger.info('Starting bot...')
 client.login(CONFIG.BOT_TOKEN)
 
+function shutdown(): void {
+  logger.info('Shutting down...')
+  client.user!.setPresence({status: 'invisible'})
+  client.destroy()
+  process.exit(0)
+}
+
+process.on("SIGTERM", () => shutdown());
+process.on("SIGINT", () => shutdown());
+
 //------------------------------------------------------------------------------
 // Bot Events
 //------------------------------------------------------------------------------
@@ -41,12 +49,12 @@ client.on('ready', (): void => {
   logger.info(`${client.user!.tag} is ready!`)
   client.user?.setPresence({
     status: 'online',
-    activities: [{ name: 'LS22 Roleplay Projekt', type: 'PLAYING' }],
+    activities: [{name: 'LS22 Roleplay Projekt', type: 'PLAYING'}],
   })
 })
 
 client.on('guildMemberAdd', (member: GuildMember): void => {
-  var embed: MessageEmbed = new MessageEmbed({
+  const embed: MessageEmbed = new MessageEmbed({
     title: 'Herzlich Willkommen!',
     description: `Der User ${member.user.tag} ist gerade in ${member.guild.name} eingeflogen!`,
     color: 'GREEN',
@@ -62,13 +70,13 @@ client.on('guildMemberAdd', (member: GuildMember): void => {
       text: `Aktuelle Useranzahl: ${member.guild.memberCount}`,
       iconURL: client.user?.displayAvatarURL(),
     },
-  })
+  });
 
   member.guild.systemChannel?.send({ embeds: [embed] })
 })
 
 client.on('guildMemberRemove', (member): void => {
-  var embed: MessageEmbed = new MessageEmbed({
+  const embed: MessageEmbed = new MessageEmbed({
     title: 'Schade, dass du gehst :(',
     description: `Der User ${member.user.tag} hat soeben ${member.guild.name} verlassen!`,
     color: 'RED',
@@ -84,15 +92,10 @@ client.on('guildMemberRemove', (member): void => {
       text: `Aktuelle Useranzahl: ${member.guild.memberCount}`,
       iconURL: client.user?.displayAvatarURL(),
     },
-  })
+  });
 
   member.guild.systemChannel?.send({ embeds: [embed] })
 })
-
-//------------------------------------------------------------------------------
-// Bot Commands
-//------------------------------------------------------------------------------
-import commands from './CommandIndex'
 
 logger.info('Loading slash commands...')
 
