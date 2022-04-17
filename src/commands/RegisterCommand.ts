@@ -1,6 +1,7 @@
 import {
   BaseCommandInteraction,
   Client,
+  MessageActionRow,
   MessageEmbed,
   Permissions,
 } from "discord.js";
@@ -109,10 +110,76 @@ const Register: Command = {
         text: interaction.guild?.name,
         iconURL: client.user?.displayAvatarURL(),
       },
+      timestamp: new Date(),
     });
 
     await interaction.reply({ embeds: [serverEmbed], ephemeral: true });
     await interaction.user.send({ embeds: [dmEmbed] });
+
+    // SEND REGISTRATION TO ADMINS
+    const owners = interaction.guild?.roles.highest.members;
+
+    if (!owners) return;
+
+    const embed: MessageEmbed = new MessageEmbed({
+      title: "Neue Registrierung auf " + interaction.guild.name,
+      fields: [
+        {
+          name: "Discord-User",
+          value: `<@${interaction.user.id}>`,
+        },
+        {
+          name: "Vorname",
+          value: registeredUser.firstname,
+          inline: true,
+        },
+        {
+          name: "Nachname",
+          value: registeredUser.lastname,
+          inline: true,
+        },
+        {
+          name: "Job",
+          value: registeredUser.job,
+          inline: true,
+        },
+        {
+          name: "Bewerbung gesendet am",
+          value: registeredUser.timestamp.toISOString(),
+        },
+      ],
+      thumbnail: {
+        url: interaction.user.displayAvatarURL(),
+      },
+      footer: {
+        text: interaction.guild?.name,
+        iconURL: client.user?.displayAvatarURL(),
+      },
+      timestamp: new Date(),
+    });
+
+    const buttons = new MessageActionRow({
+      components: [
+        {
+          type: "BUTTON",
+          style: "SUCCESS",
+          emoji: "👍",
+          label: "Annehmen",
+          customId: "RB_registration_approve",
+        },
+        {
+          type: "BUTTON",
+          style: "DANGER",
+          emoji: "👎",
+          label: "Ablehnen",
+          customId: "RB_registration_deny",
+        },
+      ],
+    });
+
+    for (const owner of owners) {
+      await owner[1].send({ embeds: [embed], components: [buttons] });
+    }
   },
 };
 
