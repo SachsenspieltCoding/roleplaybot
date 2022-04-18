@@ -2,6 +2,8 @@ import fs from "fs";
 import lodash from "lodash";
 import { logger } from "./Bot";
 import { OwnerMessage, RegisteredUser } from "./class/RegisteredUser";
+import { IDCard } from "./class/IDCard";
+import { randomUUID } from "crypto";
 
 class Database {
   protected filename: string = "";
@@ -114,20 +116,63 @@ class RegisteredUsers extends Database implements DatabaseBaseFunctions {
 }
 
 class IdCards extends Database implements DatabaseBaseFunctions {
-  add(): this {
+  idcards: IDCard[] = [];
+
+  public add(...idcards: IDCard[]): this {
+    for (const idcard of idcards) {
+      this.idcards.push(idcard);
+    }
     return this;
   }
 
-  load(): this {
+  public load(): this {
+    const objects: Object[] = this.loadFromFile();
+    for (const object of objects) {
+      const idcard = new IDCard(
+        lodash.get(object, "id"),
+        lodash.get(object, "discordUserId"),
+        lodash.get(object, "discordGuildId"),
+        lodash.get(object, "firstname"),
+        lodash.get(object, "lastname"),
+        lodash.get(object, "birthday"),
+        lodash.get(object, "nationality"),
+        lodash.get(object, "hometown"),
+        lodash.get(object, "placeOfBirth"),
+        lodash.get(object, "authority"),
+        lodash.get(object, "linkToImage"),
+        new Date(lodash.get(object, "createdAt"))
+      );
+
+      this.add(idcard);
+    }
+
     return this;
   }
 
-  remove(): this {
+  public remove(...ids: string[]): this {
+    for (const id of ids) {
+      this.idcards = this.idcards.filter((i) => i.id !== id);
+    }
     return this;
   }
 
-  save(): this {
+  public save(): this {
+    this.saveToFile<IDCard>(this.idcards);
     return this;
+  }
+
+  public get(firstname: string, lastname: string): IDCard {
+    return this.idcards.filter(
+      (card) => card.firstname === firstname && card.lastname === lastname
+    )[0];
+  }
+
+  public getById(id: string): IDCard {
+    return this.idcards.filter((card) => card.id === id)[0];
+  }
+
+  public getNewIdCardNumber(): string {
+    return randomUUID().replaceAll("-", "");
   }
 }
 
