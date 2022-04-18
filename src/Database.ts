@@ -1,7 +1,7 @@
 import fs from "fs";
 import lodash from "lodash";
 import { logger } from "./Bot";
-import { RegisteredUser } from "./class/RegisteredUser";
+import { OwnerMessage, RegisteredUser } from "./class/RegisteredUser";
 
 class Database {
   protected filename: string = "";
@@ -85,11 +85,17 @@ class RegisteredUsers extends Database implements DatabaseBaseFunctions {
         lodash.get(object, "firstname"),
         lodash.get(object, "lastname"),
         lodash.get(object, "job"),
-        new Date(lodash.get(object, "timestamp"))
+        new Date(lodash.get(object, "timestamp")),
+        lodash.get(object, "pending")
       );
 
-      for (const msgid of lodash.get(object, "ownerMessagesIds")) {
-        registration.addOwnerMessage(msgid);
+      for (const omsg of lodash.get(object, "ownerMessages")) {
+        registration.addOwnerMessage(
+          new OwnerMessage(
+            lodash.get(omsg, "channelid"),
+            lodash.get(omsg, "messageid")
+          )
+        );
       }
 
       this.add(registration);

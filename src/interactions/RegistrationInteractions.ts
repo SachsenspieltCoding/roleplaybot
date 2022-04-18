@@ -1,4 +1,9 @@
-import { ButtonInteraction, DMChannel, MessageEmbed } from "discord.js";
+import {
+  ButtonInteraction,
+  DMChannel,
+  Message,
+  MessageEmbed,
+} from "discord.js";
 import client, { logger } from "../Bot";
 import { registeredUsers } from "../Database";
 
@@ -6,11 +11,11 @@ async function allowInteraction(interaction: ButtonInteraction): Promise<void> {
   const registration = registeredUsers.get(interaction.message.content);
 
   if (!registration) {
-    await interaction.editReply("Fehler.");
+    await interaction.editReply("Diese Registrierung existiert nicht mehr!");
     return;
   }
 
-  if (!registration.ownerMessagesIds.includes(interaction.message.id)) {
+  if (!registration.pending) {
     await interaction.editReply(
       "Diese Registrierung wurde bereits bearbeitet!"
     );
@@ -39,9 +44,6 @@ async function allowInteraction(interaction: ButtonInteraction): Promise<void> {
 
   await user.send({ embeds: [embed] });
 
-  const owners = guild.roles.highest.members;
-  const ownerMessageChannels: DMChannel[] = [];
-
   const newOwnerEmbed = new MessageEmbed({
     title: "Neue Registrierung auf " + guild.name,
     fields: [
@@ -80,22 +82,24 @@ async function allowInteraction(interaction: ButtonInteraction): Promise<void> {
     color: "GREEN",
   });
 
-  for (const owner of owners) {
-    if (owner[1].user.dmChannel) {
-      ownerMessageChannels.push(owner[1].user.dmChannel);
-    }
-  }
+  for (const omsg of registration.ownerMessages) {
+    let msg: Message | null;
+    let channel;
 
-  for (const ownerMessageChannel of ownerMessageChannels) {
-    for (const msgid of registration.ownerMessagesIds) {
-      const msg = await ownerMessageChannel.messages.fetch(msgid);
-      if (msg) {
-        await msg.edit({
-          embeds: [newOwnerEmbed],
-        });
-        registration.removeOwnerMessage(msgid);
-        registeredUsers.remove(registration).add(registration).save();
-      }
+    try {
+      channel = (await client.channels.fetch(omsg.channelid)) as DMChannel;
+      if (channel) msg = await channel.messages.fetch(omsg.messageid);
+      else msg = null;
+    } catch (e) {
+      msg = null;
+    }
+
+    if (msg) {
+      await msg.edit({
+        embeds: [newOwnerEmbed],
+      });
+      registration.setFinished();
+      registeredUsers.remove(registration).add(registration).save();
     }
   }
 
@@ -106,7 +110,7 @@ async function allowInteraction(interaction: ButtonInteraction): Promise<void> {
 async function denyInteraction(interaction: ButtonInteraction): Promise<void> {
   const registration = registeredUsers.get(interaction.message.content);
 
-  if (!registration) {
+  if (!registration || !registration.pending) {
     await interaction.editReply(
       "Diese Registrierung wurde bereits bearbeitet!"
     );
@@ -131,9 +135,6 @@ async function denyInteraction(interaction: ButtonInteraction): Promise<void> {
   });
 
   await user.send({ embeds: [embed] });
-
-  const owners = guild.roles.highest.members;
-  const ownerMessageChannels: DMChannel[] = [];
 
   const newOwnerEmbed = new MessageEmbed({
     title: "Neue Registrierung auf " + guild.name,
@@ -173,22 +174,24 @@ async function denyInteraction(interaction: ButtonInteraction): Promise<void> {
     color: "RED",
   });
 
-  for (const owner of owners) {
-    if (owner[1].user.dmChannel) {
-      ownerMessageChannels.push(owner[1].user.dmChannel);
-    }
-  }
+  for (const omsg of registration.ownerMessages) {
+    let msg: Message | null;
+    let channel;
 
-  for (const ownerMessageChannel of ownerMessageChannels) {
-    for (const msgid of registration.ownerMessagesIds) {
-      const msg = await ownerMessageChannel.messages.fetch(msgid);
-      if (msg) {
-        await msg.edit({
-          embeds: [newOwnerEmbed],
-        });
-        registration.removeOwnerMessage(msgid);
-        registeredUsers.remove(registration).add(registration).save();
-      }
+    try {
+      channel = (await client.channels.fetch(omsg.channelid)) as DMChannel;
+      if (channel) msg = await channel.messages.fetch(omsg.messageid);
+      else msg = null;
+    } catch (e) {
+      msg = null;
+    }
+
+    if (msg) {
+      await msg.edit({
+        embeds: [newOwnerEmbed],
+      });
+      registration.removeOwnerMessage(omsg);
+      registeredUsers.remove(registration).add(registration).save();
     }
   }
 

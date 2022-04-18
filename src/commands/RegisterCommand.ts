@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import Command from "src/Command";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
-import { RegisteredUser } from "../class/RegisteredUser";
+import { OwnerMessage, RegisteredUser } from "../class/RegisteredUser";
 import { registeredUsers as database } from "../Database";
 
 const Register: Command = {
@@ -186,7 +186,7 @@ const Register: Command = {
         components: [buttons],
         content: interaction.id,
       });
-      registeredUser.addOwnerMessage(msg.id);
+      registeredUser.addOwnerMessage(new OwnerMessage(msg.channel.id, msg.id));
     }
 
     database.save();
