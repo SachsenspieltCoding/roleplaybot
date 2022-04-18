@@ -70,6 +70,14 @@ class RegisteredUsers extends Database implements DatabaseBaseFunctions {
     return filteredUsers[0];
   }
 
+  public getByUserId(id: string): RegisteredUser | null {
+    const filteredUsers: RegisteredUser[] = this.users.filter(
+      (u) => u.userid === id
+    );
+    if (filteredUsers.length == 0) return null;
+    return filteredUsers[0];
+  }
+
   public save(): this {
     this.saveToFile<RegisteredUser>(this.users);
     return this;

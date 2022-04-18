@@ -3,7 +3,6 @@ import {
   Client,
   MessageActionRow,
   MessageEmbed,
-  Permissions,
 } from "discord.js";
 import Command from "src/Command";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
@@ -34,12 +33,6 @@ const Register: Command = {
     },
   ],
   execute: async (client: Client, interaction: BaseCommandInteraction) => {
-    if (!interaction.memberPermissions?.has(Permissions.FLAGS.ADMINISTRATOR)) {
-      await interaction.reply(
-        `Dieser Befehl ist noch nicht vollständig implementiert!`
-      );
-    }
-
     for (const user of database.users) {
       if (user.userid == interaction.user.id) {
         const embed: MessageEmbed = new MessageEmbed({

@@ -97,6 +97,7 @@ async function allowInteraction(interaction: ButtonInteraction): Promise<void> {
     if (msg) {
       await msg.edit({
         embeds: [newOwnerEmbed],
+        components: [],
       });
       registration.setFinished();
       registeredUsers.remove(registration).add(registration).save();
@@ -119,8 +120,6 @@ async function denyInteraction(interaction: ButtonInteraction): Promise<void> {
 
   const guild = await client.guilds.fetch(registration.guildid);
   const user = await guild.members.fetch(registration.userid);
-  const roles = guild.roles.cache.filter((r) => r.name.includes("▮"));
-  await user.roles.add(roles);
 
   const embed = new MessageEmbed({
     title: "Deine Registrierung wurde abgelehnt :(",
@@ -189,6 +188,7 @@ async function denyInteraction(interaction: ButtonInteraction): Promise<void> {
     if (msg) {
       await msg.edit({
         embeds: [newOwnerEmbed],
+        components: [],
       });
       registration.removeOwnerMessage(omsg);
       registeredUsers.remove(registration).add(registration).save();

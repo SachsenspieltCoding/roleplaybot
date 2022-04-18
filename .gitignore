@@ -128,4 +128,7 @@ dist
 
 /.idea/
 
-src/database/**/*.json
+#src/database/registeredUsers.json
+#src/database/driversLicenses.json
+#src/database/idCards.json
+#src/database/licensePlates.json
