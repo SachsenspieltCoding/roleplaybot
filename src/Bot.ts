@@ -12,6 +12,7 @@ import * as CONFIG from "./config.json";
 //------------------------------------------------------------------------------
 import commands from "./CommandIndex";
 import { loadDatabases } from "./Database";
+import { interactionReceived } from "./ButtonInteractionManager";
 
 //------------------------------------------------------------------------------
 // Init Dotenv & Discord.js
@@ -119,6 +120,8 @@ client.on("interactionCreate", (interaction: Interaction) => {
         command.execute(client, interaction);
       }
     }
+  } else if (interaction.isButton()) {
+    interactionReceived(interaction);
   }
 });
 

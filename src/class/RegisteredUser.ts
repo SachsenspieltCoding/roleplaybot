@@ -1,51 +1,40 @@
 class RegisteredUser {
-  private readonly _discordid: string;
-  private readonly _firstname: string;
-  private readonly _lastname: string;
-  private readonly _job: string;
-  private readonly _timestamp: Date;
+  public readonly id: string;
+  public readonly userid: string;
+  public readonly guildid: string;
+  public readonly firstname: string;
+  public readonly lastname: string;
+  public readonly job: string;
+  public readonly timestamp: Date;
+
+  public ownerMessagesIds: string[] = [];
 
   constructor(
-    discordid: string,
+    id: string,
+    userid: string,
+    guildid: string,
     firstname: string,
     lastname: string,
-    job: string
+    job: string,
+    timestamp?: Date
   ) {
-    this._discordid = discordid;
-    this._firstname = firstname;
-    this._lastname = lastname;
-    this._job = job;
-    this._timestamp = new Date();
+    this.id = id;
+    this.userid = userid;
+    this.guildid = guildid;
+    this.firstname = firstname;
+    this.lastname = lastname;
+    this.job = job;
+    this.timestamp = timestamp ? timestamp : new Date();
   }
 
-  get discordid(): string {
-    return this._discordid;
+  public addOwnerMessage(id: string): this {
+    this.ownerMessagesIds.push(id);
+    return this;
   }
 
-  get firstname(): string {
-    return this._firstname;
-  }
-
-  get lastname(): string {
-    return this._lastname;
-  }
-
-  get job(): string {
-    return this._job;
-  }
-
-  get timestamp(): Date {
-    return this._timestamp;
-  }
-
-  public toObject(): Object {
-    return {
-      discordid: this._discordid,
-      firstname: this._firstname,
-      lastname: this._lastname,
-      job: this._job,
-      timestamp: this._timestamp,
-    };
+  public removeOwnerMessage(id: string): this {
+    this.ownerMessagesIds = this.ownerMessagesIds.filter((m) => m !== id);
+    return this;
   }
 }
 

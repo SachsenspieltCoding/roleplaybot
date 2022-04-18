@@ -1,80 +1,27 @@
 import fs from "fs";
 import lodash from "lodash";
 import { logger } from "./Bot";
-
-class Record {
-  public id: number;
-  public record: Object;
-
-  constructor(id: number, record: Object) {
-    this.id = id;
-    this.record = record;
-  }
-}
+import { RegisteredUser } from "./class/RegisteredUser";
 
 class Database {
-  private data: Record[] = [];
-  private readonly filename: string;
+  protected filename: string = "";
 
-  constructor(filename: string, data: Record[]) {
+  constructor(filename: string) {
     this.filename = filename;
-    this.data = data;
   }
 
-  public get getData(): Record[] {
-    return this.data;
-  }
-
-  public add(...objects: Object[]): Database {
-    for (const object of objects) {
-      this.data.push(new Record(this.nextIndex(), object));
-    }
-    return this;
-  }
-
-  public nextIndex(): number {
-    let number = 0;
-    for (const record of this.data) {
-      if (record.id >= number) number = record.id + 1;
-    }
-    return number;
-  }
-
-  public removeById(id: number): Database {
-    this.data = this.data.filter((o: Record) => {
-      o.id !== id;
-    });
-    return this;
-  }
-
-  public removeByObject(...objects: Object[]): Database {
-    for (const object of objects) {
-      this.data = this.data.filter(
-        (o: Record) => !lodash.isEqual(o.record, object)
-      );
-    }
-    return this;
-  }
-
-  public save(): Database {
-    let toSave: Object[] = [];
-
-    for (const object of this.data) {
-      toSave.push(object.record);
-    }
-
+  public saveToFile<T>(data: T[]): void {
     try {
       fs.writeFileSync(
         `./src/database/${this.filename}.json`,
-        JSON.stringify(toSave, null, 2)
+        JSON.stringify(data, null, 2)
       );
     } catch (e) {
       logger.error(e);
     }
-    return this;
   }
 
-  public load(): Database {
+  public loadFromFile(): Object[] {
     let parsed: Object[] = [];
 
     try {
@@ -84,28 +31,132 @@ class Database {
         })
       );
     } catch (e) {
-      this.save();
+      this.saveToFile([]);
     }
 
-    for (const element of parsed) {
-      this.add(element);
+    return parsed;
+  }
+}
+
+interface DatabaseBaseFunctions {
+  add: () => this;
+  remove: () => this;
+  save: () => this;
+  load: () => this;
+}
+
+class RegisteredUsers extends Database implements DatabaseBaseFunctions {
+  public users: RegisteredUser[] = [];
+
+  public add(...users: RegisteredUser[]): this {
+    for (const user of users) {
+      this.users.push(user);
     }
+    return this;
+  }
+
+  public remove(...users: RegisteredUser[]): this {
+    for (const user of users) {
+      this.users = this.users.filter((r) => r.id !== user.id);
+    }
+    return this;
+  }
+
+  public get(id: string): RegisteredUser | null {
+    const filteredUsers: RegisteredUser[] = this.users.filter(
+      (u) => u.id === id
+    );
+    if (filteredUsers.length == 0) return null;
+    return filteredUsers[0];
+  }
+
+  public save(): this {
+    this.saveToFile<RegisteredUser>(this.users);
+    return this;
+  }
+
+  public load(): this {
+    const objects: Object[] = this.loadFromFile();
+    for (const object of objects) {
+      const registration = new RegisteredUser(
+        lodash.get(object, "id"),
+        lodash.get(object, "userid"),
+        lodash.get(object, "guildid"),
+        lodash.get(object, "firstname"),
+        lodash.get(object, "lastname"),
+        lodash.get(object, "job"),
+        new Date(lodash.get(object, "timestamp"))
+      );
+
+      for (const msgid of lodash.get(object, "ownerMessagesIds")) {
+        registration.addOwnerMessage(msgid);
+      }
+
+      this.add(registration);
+    }
+
     return this;
   }
 }
 
-class RegisteredUsers extends Database {}
+class IdCards extends Database implements DatabaseBaseFunctions {
+  add(): this {
+    return this;
+  }
 
-class IdCards extends Database {}
+  load(): this {
+    return this;
+  }
 
-class DriversLicenses extends Database {}
+  remove(): this {
+    return this;
+  }
 
-class LicensePlates extends Database {}
+  save(): this {
+    return this;
+  }
+}
 
-const registeredUsers = new RegisteredUsers("registeredUsers", []);
-const idCards = new IdCards("idCards", []);
-const driversLicenses = new DriversLicenses("driversLicenses", []);
-const licensePlates = new LicensePlates("licensePlates", []);
+class DriversLicenses extends Database implements DatabaseBaseFunctions {
+  add(): this {
+    return this;
+  }
+
+  load(): this {
+    return this;
+  }
+
+  remove(): this {
+    return this;
+  }
+
+  save(): this {
+    return this;
+  }
+}
+
+class LicensePlates extends Database implements DatabaseBaseFunctions {
+  add(): this {
+    return this;
+  }
+
+  load(): this {
+    return this;
+  }
+
+  remove(): this {
+    return this;
+  }
+
+  save(): this {
+    return this;
+  }
+}
+
+const registeredUsers = new RegisteredUsers("registeredUsers");
+const idCards = new IdCards("idCards");
+const driversLicenses = new DriversLicenses("driversLicenses");
+const licensePlates = new LicensePlates("licensePlates");
 
 function loadDatabases(): void {
   logger.info("Loading databases...");

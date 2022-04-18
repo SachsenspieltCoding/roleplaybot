@@ -40,9 +40,8 @@ const Register: Command = {
       );
     }
 
-    for (const x of database.getData) {
-      // @ts-ignore
-      if (x.record["discordid"] === interaction.user.id) {
+    for (const user of database.users) {
+      if (user.userid == interaction.user.id) {
         const embed: MessageEmbed = new MessageEmbed({
           title: "Roleplay Anmeldung fehlgeschlagen!",
           description:
@@ -59,14 +58,18 @@ const Register: Command = {
       }
     }
 
+    if (interaction.guild == null) return;
+
     const registeredUser: RegisteredUser = new RegisteredUser(
+      interaction.id,
       interaction.user.id,
-      (interaction.options.get("vorname")?.value as string).trim(),
+      interaction.guild.id,
+      interaction.options.get("vorname")?.value as string,
       interaction.options.get("nachname")?.value as string,
       interaction.options.get("beruf")?.value as string
     );
 
-    database.add(registeredUser.toObject()).save();
+    database.add(registeredUser);
 
     const serverEmbed: MessageEmbed = new MessageEmbed({
       title: "Roleplay Anmeldung erfolgt!",
@@ -178,8 +181,15 @@ const Register: Command = {
     });
 
     for (const owner of owners) {
-      await owner[1].send({ embeds: [embed], components: [buttons] });
+      const msg = await owner[1].send({
+        embeds: [embed],
+        components: [buttons],
+        content: interaction.id,
+      });
+      registeredUser.addOwnerMessage(msg.id);
     }
+
+    database.save();
   },
 };
 
