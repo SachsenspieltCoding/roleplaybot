@@ -44,10 +44,6 @@ const DriversLicense: Command = {
           name: "L-Führerscheinklasse",
           value: "l",
         },
-        {
-          name: "B-Führerscheinklasse",
-          value: "b",
-        },
       ],
     },
     {
