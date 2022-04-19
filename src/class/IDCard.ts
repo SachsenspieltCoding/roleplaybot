@@ -1,3 +1,5 @@
+import { DriversLicense } from "./DriversLicense";
+
 class IDCard {
   public id: string;
   public discordUserId: string;
@@ -12,6 +14,8 @@ class IDCard {
   public linkToImage: string;
   public createdAt: Date;
 
+  public driversLicense: DriversLicense;
+
   constructor(
     id: string,
     discordUserId: string,
@@ -24,6 +28,7 @@ class IDCard {
     placeOfBirth: string,
     authority: string,
     linkToImage: string,
+    driversLicense: DriversLicense,
     date?: Date
   ) {
     this.id = id;
@@ -37,6 +42,7 @@ class IDCard {
     this.placeOfBirth = placeOfBirth;
     this.authority = authority;
     this.linkToImage = linkToImage;
+    this.driversLicense = driversLicense;
     this.createdAt = date ? date : new Date();
   }
 }

@@ -130,9 +130,12 @@ client.on("messageCreate", (message) => {
 logger.info("Loading slash commands...");
 
 try {
-  rest.put(Routes.applicationCommands(CONFIG.CLIENT_ID), {
-    body: commands,
-  });
+  rest.put(
+    Routes.applicationGuildCommands(CONFIG.CLIENT_ID, "839109235287654431"),
+    {
+      body: commands,
+    }
+  );
   logger.info("Successfully loaded slash commands.");
 } catch (error) {
   logger.error(error);

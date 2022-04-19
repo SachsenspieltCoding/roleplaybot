@@ -8,6 +8,7 @@ import Command from "src/Command";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { IDCard } from "../class/IDCard";
 import { idCards, registeredUsers } from "../Database";
+import { DriversLicense } from "../class/DriversLicense";
 
 const IdCardCreate: Command = {
   name: "idcardregister",
@@ -111,7 +112,8 @@ const IdCardCreate: Command = {
       input.hometown,
       input.placeOfBirth,
       input.authority,
-      input.linkToImage
+      input.linkToImage,
+      new DriversLicense(false, false, false, false, false, false)
     );
 
     idCards.add(idcard).save();

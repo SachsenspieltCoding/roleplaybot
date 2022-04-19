@@ -1,6 +1,7 @@
 import {
   BaseCommandInteraction,
   Client,
+  GuildMemberRoleManager,
   MessageEmbed,
   Permissions,
 } from "discord.js";
@@ -9,14 +10,14 @@ import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { idCards } from "../Database";
 import { IDCard } from "../class/IDCard";
 
-const FindIdCard: Command = {
-  name: "findidcard",
-  description: "Gibt den Personalausweis einer Person aus.",
+const FindDriversLicense: Command = {
+  name: "finddriverslicense",
+  description: "Gibt den Führerschein einer Person aus.",
   options: [
     {
       type: ApplicationCommandOptionTypes.SUB_COMMAND,
       name: "name",
-      description: "Suche Personalausweis nach Vor- und Nachname.",
+      description: "Suche Führerschein nach Vor- und Nachname.",
       options: [
         {
           type: ApplicationCommandOptionTypes.STRING,
@@ -36,7 +37,7 @@ const FindIdCard: Command = {
       type: ApplicationCommandOptionTypes.SUB_COMMAND,
       name: "id",
       description:
-        "Suche Personalausweis nach Personalausweisidentifikationsnummer.",
+        "Suche Führerschein nach Personalausweisidentifikationsnummer.",
       options: [
         {
           type: ApplicationCommandOptionTypes.STRING,
@@ -69,26 +70,37 @@ const FindIdCard: Command = {
 
     if (!idcard) {
       await interaction.editReply(
-        `Es konnte kein Personalausweis gefunden werden.`
+        `Es konnte kein Führerschein gefunden werden.`
       );
       return;
     }
 
+    const policeRole = interaction.guild?.roles.cache
+      .filter((r) => r.name == "Polizei")
+      .first();
+    const memberRoleManager = interaction.member
+      ?.roles as GuildMemberRoleManager;
+
     if (
+      policeRole &&
       interaction.member?.user.id !== idcard.discordUserId &&
-      !interaction.memberPermissions?.has(Permissions.FLAGS.ADMINISTRATOR)
+      memberRoleManager.cache.filter((r) => r.id === policeRole.id).size <= 0
     ) {
-      await interaction.editReply(
-        "Für diesen Befehl benötigst du Administratoren-Rechte!"
-      );
-      return;
+      if (
+        !interaction.memberPermissions?.has(Permissions.FLAGS.ADMINISTRATOR)
+      ) {
+        await interaction.editReply(
+          "Für diesen Befehl benötigst du Adminstratoren-Rechte!"
+        );
+        return;
+      }
     }
 
     const embed = new MessageEmbed({
-      title: "BUNDESREPUBLIK DEUTSCHLAND",
+      title: "FÜHRERSCHEIN BUNDESREPUBLIK DEUTSCHLAND",
+      color: "BLUE",
       thumbnail: {
         url: idcard.linkToImage,
-        width: 1000,
       },
       fields: [
         {
@@ -106,42 +118,61 @@ const FindIdCard: Command = {
           inline: true,
         },
         {
-          name: "Staatsangehörigkeit",
-          value: idcard.nationality,
-          inline: false,
-        },
-        {
-          name: "Wohnort",
-          value: idcard.hometown,
-        },
-        {
           name: "Geburtsdatum",
           value: idcard.birthday,
           inline: true,
         },
         {
-          name: "Geburtsort",
-          value: idcard.placeOfBirth,
-          inline: true,
-        },
-        {
           name: "Ausstellende Behörde",
           value: idcard.authority,
-          inline: false,
+          inline: true,
         },
         {
           name: "Ausgestellt am",
           value: `${idcard.createdAt.getDate()}.${
             idcard.createdAt.getMonth() + 1
           }.${idcard.createdAt.getFullYear()}`,
-          inline: false,
+          inline: true,
+        },
+        {
+          name: "‎",
+          value: "‎",
+        },
+        {
+          name: "B",
+          value: idcard.driversLicense.B ? "✓" : "⁄",
+          inline: true,
+        },
+        {
+          name: "C",
+          value: idcard.driversLicense.C ? "✓" : "⁄",
+          inline: true,
+        },
+        {
+          name: "A1",
+          value: idcard.driversLicense.A1 ? "✓" : "⁄",
+          inline: true,
+        },
+        {
+          name: "AM",
+          value: idcard.driversLicense.AM ? "✓" : "⁄",
+          inline: true,
+        },
+        {
+          name: "T",
+          value: idcard.driversLicense.T ? "✓" : "⁄",
+          inline: true,
+        },
+        {
+          name: "L",
+          value: idcard.driversLicense.L ? "✓" : "⁄",
+          inline: true,
         },
       ],
-      color: "YELLOW",
     });
 
     await interaction.editReply({ embeds: [embed] });
   },
 };
 
-export default FindIdCard;
+export default FindDriversLicense;

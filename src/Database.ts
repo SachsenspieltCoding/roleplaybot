@@ -4,6 +4,7 @@ import { logger } from "./Bot";
 import { OwnerMessage, RegisteredUser } from "./class/RegisteredUser";
 import { IDCard } from "./class/IDCard";
 import { randomUUID } from "crypto";
+import { DriversLicense } from "./class/DriversLicense";
 
 class Database {
   protected filename: string = "";
@@ -128,6 +129,7 @@ class IdCards extends Database implements DatabaseBaseFunctions {
   public load(): this {
     const objects: Object[] = this.loadFromFile();
     for (const object of objects) {
+      const driversLicense = lodash.get(object, "driversLicense");
       const idcard = new IDCard(
         lodash.get(object, "id"),
         lodash.get(object, "discordUserId"),
@@ -140,6 +142,14 @@ class IdCards extends Database implements DatabaseBaseFunctions {
         lodash.get(object, "placeOfBirth"),
         lodash.get(object, "authority"),
         lodash.get(object, "linkToImage"),
+        new DriversLicense(
+          lodash.get(driversLicense, "B"),
+          lodash.get(driversLicense, "C"),
+          lodash.get(driversLicense, "A1"),
+          lodash.get(driversLicense, "AM"),
+          lodash.get(driversLicense, "T"),
+          lodash.get(driversLicense, "L")
+        ),
         new Date(lodash.get(object, "createdAt"))
       );
 
@@ -176,24 +186,6 @@ class IdCards extends Database implements DatabaseBaseFunctions {
   }
 }
 
-class DriversLicenses extends Database implements DatabaseBaseFunctions {
-  add(): this {
-    return this;
-  }
-
-  load(): this {
-    return this;
-  }
-
-  remove(): this {
-    return this;
-  }
-
-  save(): this {
-    return this;
-  }
-}
-
 class LicensePlates extends Database implements DatabaseBaseFunctions {
   add(): this {
     return this;
@@ -214,22 +206,14 @@ class LicensePlates extends Database implements DatabaseBaseFunctions {
 
 const registeredUsers = new RegisteredUsers("registeredUsers");
 const idCards = new IdCards("idCards");
-const driversLicenses = new DriversLicenses("driversLicenses");
 const licensePlates = new LicensePlates("licensePlates");
 
 function loadDatabases(): void {
   logger.info("Loading databases...");
   registeredUsers.load();
   idCards.load();
-  driversLicenses.load();
   licensePlates.load();
   logger.info("Successfully loaded databases.");
 }
 
-export {
-  registeredUsers,
-  idCards,
-  driversLicenses,
-  licensePlates,
-  loadDatabases,
-};
+export { registeredUsers, idCards, licensePlates, loadDatabases };
