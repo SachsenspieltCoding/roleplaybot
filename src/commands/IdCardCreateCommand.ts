@@ -7,7 +7,7 @@ import {
 import Command from "src/Command";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { IDCard } from "../class/IDCard";
-import { idCards } from "../Database";
+import { idCards, registeredUsers } from "../Database";
 
 const IdCardCreate: Command = {
   name: "idcardregister",
@@ -69,7 +69,10 @@ const IdCardCreate: Command = {
     },
   ],
   execute: async (client: Client, interaction: BaseCommandInteraction) => {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
+
+    const user = interaction.options.getMember("besitzer") as GuildMember;
+
     if (!interaction.memberPermissions?.has(Permissions.FLAGS.ADMINISTRATOR)) {
       await interaction.editReply(
         "Für diesen Befehl benötigst du Administratoren-Rechte!"
@@ -77,7 +80,14 @@ const IdCardCreate: Command = {
       return;
     }
 
-    const user = interaction.options.getMember("besitzer") as GuildMember;
+    const registeredUser = registeredUsers.getByUserId(user.user.id);
+
+    if (!registeredUser) {
+      await interaction.editReply(
+        `Der User ${user.user.tag} ist nicht registriert!`
+      );
+      return;
+    }
 
     const input = {
       firstname: interaction.options.get("vorname")?.value as string,

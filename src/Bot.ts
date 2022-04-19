@@ -1,7 +1,13 @@
 //------------------------------------------------------------------------------
 // Import Libraries
 //------------------------------------------------------------------------------
-import { Client, GuildMember, Interaction, MessageEmbed } from "discord.js";
+import {
+  Client,
+  GuildMember,
+  Interaction,
+  MessageEmbed,
+  TextChannel,
+} from "discord.js";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import log4js, { Logger } from "log4js";
@@ -100,6 +106,27 @@ client.on("guildMemberRemove", (member): void => {
   member.guild.systemChannel?.send({ embeds: [embed] });
 });
 
+client.on("messageCreate", (message) => {
+  if (message.channel instanceof TextChannel) {
+    if (message.channel.topic?.includes("!PASSBILD")) {
+      if (message.attachments.size > 0) {
+        let attaches: string[] = [];
+        for (const messageAttachment of message.attachments.toJSON()) {
+          if (messageAttachment.contentType === "image/jpeg" || "image/png") {
+            attaches.push(messageAttachment.url);
+          }
+        }
+        message.reply(
+          `**DISCORD-CDN LINKS:\n**\`\`\`${attaches.join("\n")}\`\`\``
+        );
+      }
+    }
+  }
+});
+
+//------------------------------------------------------------------------------
+// Bot Commands
+//------------------------------------------------------------------------------
 logger.info("Loading slash commands...");
 
 try {

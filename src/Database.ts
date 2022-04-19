@@ -161,7 +161,7 @@ class IdCards extends Database implements DatabaseBaseFunctions {
     return this;
   }
 
-  public get(firstname: string, lastname: string): IDCard {
+  public get(firstname: string, lastname: string): IDCard | null {
     return this.idcards.filter(
       (card) => card.firstname === firstname && card.lastname === lastname
     )[0];
