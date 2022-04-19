@@ -101,15 +101,32 @@ const LicensePlateCreate: Command = {
 
     const firstname = interaction.options.get("vorname")?.value as string;
     const lastname = interaction.options.get("nachname")?.value as string;
-    const city = interaction.options.get("stadtkennzeichner")?.value as string;
-    const letters = interaction.options.get("buchstaben")?.value as string;
-    const numbers = interaction.options.get("zahlen")?.value as string;
+    const city = (
+      interaction.options.get("stadtkennzeichner")?.value as string
+    ).toUpperCase();
+    const letters = (
+      interaction.options.get("buchstaben")?.value as string
+    ).toUpperCase();
+    const numbers = (
+      interaction.options.get("zahlen")?.value as string
+    ).toUpperCase();
     const vehicle = interaction.options.get("fahrzeug")?.value as string;
     const vehicleClass = interaction.options.get("fahrzeugklasse")
       ?.value as string;
     const vehicleHorsepower = interaction.options.get("motorleistung")
       ?.value as number;
     const authority = interaction.options.get("behörde")?.value as string;
+
+    const searchedPlate = licensePlates.getByLicensePlateString(
+      `${city} ${letters} ${numbers}`
+    );
+
+    if (searchedPlate) {
+      await interaction.editReply(
+        `Das Kennzeichen ${city} ${letters} ${numbers} ist bereits vergeben!`
+      );
+      return;
+    }
 
     const plate = new LicensePlate(
       city,

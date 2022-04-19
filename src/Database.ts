@@ -236,6 +236,12 @@ class LicensePlates extends Database implements DatabaseBaseFunctions {
   public getByLicensePlateString(str: string): LicensePlate | null {
     return this.plates.filter((p) => p.getLicensePlateString() === str)[0];
   }
+
+  public getPlatesByName(firstname: string, lastname: string): LicensePlate[] {
+    return this.plates.filter(
+      (p) => p.ownerFirstname === firstname && p.ownerLastname === lastname
+    );
+  }
 }
 
 const registeredUsers = new RegisteredUsers("registeredUsers");

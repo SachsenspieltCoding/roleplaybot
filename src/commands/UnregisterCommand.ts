@@ -7,7 +7,7 @@ import {
   Permissions,
 } from "discord.js";
 import Command from "src/Command";
-import { registeredUsers } from "../Database";
+import { idCards, licensePlates, registeredUsers } from "../Database";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 
 const Unregister: Command = {
@@ -79,8 +79,25 @@ const Unregister: Command = {
 
     await guildMember.send({ embeds: [embed] });
 
+    const idcard = idCards.get(
+      registeredUser.firstname,
+      registeredUser.lastname
+    );
+
+    if (idcard) {
+      idCards.remove(idcard.id).save();
+
+      const plates = licensePlates.getPlatesByName(
+        idcard.firstname,
+        idcard.lastname
+      );
+
+      for (const plate of plates) {
+        licensePlates.remove(plate).save();
+      }
+    }
+
     registeredUsers.remove(registeredUser).save();
-    // ToDo: Other deletion stuff
 
     await interaction.reply({
       content: `Der User ${guildMember.user.tag} wurde erfolgreich vom Roleplay abgemeldet!`,
