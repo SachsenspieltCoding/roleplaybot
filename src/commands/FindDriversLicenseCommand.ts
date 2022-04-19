@@ -11,7 +11,7 @@ import { idCards } from "../Database";
 import { IDCard } from "../class/IDCard";
 
 const FindDriversLicense: Command = {
-  name: "finddriverslicense",
+  name: "führerscheinauskunft",
   description: "Gibt den Führerschein einer Person aus.",
   options: [
     {

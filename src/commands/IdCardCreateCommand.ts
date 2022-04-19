@@ -11,7 +11,7 @@ import { idCards, registeredUsers } from "../Database";
 import { DriversLicense } from "../class/DriversLicense";
 
 const IdCardCreate: Command = {
-  name: "idcardregister",
+  name: "personalausweis",
   description: "Registriert einen neuen Personalausweis",
   options: [
     {

@@ -10,7 +10,7 @@ import { idCards } from "../Database";
 import { IDCard } from "../class/IDCard";
 
 const FindIdCard: Command = {
-  name: "findidcard",
+  name: "personalausweisauskunft",
   description: "Gibt den Personalausweis einer Person aus.",
   options: [
     {
