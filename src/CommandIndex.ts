@@ -5,6 +5,7 @@ import UnregisterCommand from "./commands/UnregisterCommand";
 import IdCardCreateCommand from "./commands/IdCardCreateCommand";
 import FindIdCardCommand from "./commands/FindIdCardCommand";
 import FindDriversLicenseCommand from "./commands/FindDriversLicenseCommand";
+import DriversLicenseCommand from "./commands/DriversLicenseCommand";
 
 const commands: Command[] = [
   HelloWorld,
@@ -13,6 +14,7 @@ const commands: Command[] = [
   IdCardCreateCommand,
   FindIdCardCommand,
   FindDriversLicenseCommand,
+  DriversLicenseCommand,
 ];
 
 export default commands;
