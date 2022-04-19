@@ -5,6 +5,7 @@ import { OwnerMessage, RegisteredUser } from "./class/RegisteredUser";
 import { IDCard } from "./class/IDCard";
 import { randomUUID } from "crypto";
 import { DriversLicense } from "./class/DriversLicense";
+import { LicensePlate } from "./class/LicensePlate";
 
 class Database {
   protected filename: string = "";
@@ -187,20 +188,53 @@ class IdCards extends Database implements DatabaseBaseFunctions {
 }
 
 class LicensePlates extends Database implements DatabaseBaseFunctions {
-  add(): this {
+  plates: LicensePlate[] = [];
+
+  public add(...plates: LicensePlate[]): this {
+    for (const plate of plates) {
+      this.plates.push(plate);
+    }
     return this;
   }
 
-  load(): this {
+  public load(): this {
+    const objects: Object[] = this.loadFromFile();
+    for (const object of objects) {
+      const plate = new LicensePlate(
+        lodash.get(object, "city"),
+        lodash.get(object, "letters"),
+        lodash.get(object, "numbers"),
+        lodash.get(object, "vehicle"),
+        lodash.get(object, "vehicleClass"),
+        lodash.get(object, "vehicleHorsepower"),
+        lodash.get(object, "ownerFirstname"),
+        lodash.get(object, "ownerLastname"),
+        lodash.get(object, "authority"),
+        new Date(lodash.get(object, "registeredAt"))
+      );
+
+      this.add(plate);
+    }
+
     return this;
   }
 
-  remove(): this {
+  public remove(...plates: LicensePlate[]): this {
+    for (const plate of plates) {
+      this.plates = this.plates.filter(
+        (i) => i.getLicensePlateString() !== plate.getLicensePlateString()
+      );
+    }
     return this;
   }
 
-  save(): this {
+  public save(): this {
+    this.saveToFile<LicensePlate>(this.plates);
     return this;
+  }
+
+  public getByLicensePlateString(str: string): LicensePlate | null {
+    return this.plates.filter((p) => p.getLicensePlateString() === str)[0];
   }
 }
 

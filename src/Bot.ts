@@ -124,20 +124,6 @@ client.on("messageCreate", (message) => {
   }
 });
 
-//------------------------------------------------------------------------------
-// Bot Commands
-//------------------------------------------------------------------------------
-logger.info("Loading slash commands...");
-
-try {
-  rest.put(Routes.applicationCommands(CONFIG.CLIENT_ID), {
-    body: commands,
-  });
-  logger.info("Successfully loaded slash commands.");
-} catch (error) {
-  logger.error(error);
-}
-
 client.on("interactionCreate", (interaction: Interaction) => {
   if (interaction.isCommand()) {
     logger.info(`${interaction.user.tag} called /${interaction.commandName}`);
@@ -151,6 +137,23 @@ client.on("interactionCreate", (interaction: Interaction) => {
     interactionReceived(interaction);
   }
 });
+
+//------------------------------------------------------------------------------
+// Bot Commands
+//------------------------------------------------------------------------------
+logger.info("Loading slash commands...");
+
+try {
+  rest.put(
+    Routes.applicationGuildCommands(CONFIG.CLIENT_ID, "839109235287654431"),
+    {
+      body: commands,
+    }
+  );
+  logger.info("Successfully loaded slash commands.");
+} catch (error) {
+  logger.error(error);
+}
 
 //------------------------------------------------------------------------------
 // Exports
