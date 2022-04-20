@@ -58,7 +58,12 @@ client.on("ready", (): void => {
   logger.info(`${client.user!.tag} is ready!`);
   client.user?.setPresence({
     status: "online",
-    activities: [{ name: "LS22 Roleplay Projekt", type: "PLAYING" }],
+    activities: [
+      {
+        name: `LS22 Roleplay Projekt | Bot-Version ${process.env.npm_package_version}`,
+        type: "PLAYING",
+      },
+    ],
   });
 });
 
