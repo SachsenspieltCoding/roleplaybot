@@ -9,6 +9,8 @@ import DriversLicenseCommand from "./commands/DriversLicenseCommand";
 import LicensePlateCommand from "./commands/LicensePlateCommand";
 import LicensePlateRegisterCommand from "./commands/LicensePlateRegisterCommand";
 import LicensePlateDeleteCommand from "./commands/LicensePlateDeleteCommand";
+import ServerInfo from "./commands/ServerInfoCommand";
+import SetServerInfoCommand from "./commands/SetServerInfoCommand";
 
 const commands: Command[] = [
   HelloWorld,
@@ -21,6 +23,8 @@ const commands: Command[] = [
   LicensePlateCommand,
   LicensePlateRegisterCommand,
   LicensePlateDeleteCommand,
+  ServerInfo,
+  SetServerInfoCommand,
 ];
 
 export default commands;

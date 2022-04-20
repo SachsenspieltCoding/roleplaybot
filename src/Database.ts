@@ -6,6 +6,7 @@ import { IDCard } from "./class/IDCard";
 import { randomUUID } from "crypto";
 import { DriversLicense } from "./class/DriversLicense";
 import { LicensePlate } from "./class/LicensePlate";
+import { ServerInfoContainer } from "./class/ServerInfoContainer";
 
 class Database {
   protected filename: string = "";
@@ -25,7 +26,7 @@ class Database {
     }
   }
 
-  public loadFromFile(): Object[] {
+  protected loadFromFile(): Object[] {
     let parsed: Object[] = [];
 
     try {
@@ -244,16 +245,74 @@ class LicensePlates extends Database implements DatabaseBaseFunctions {
   }
 }
 
+class ServerInfo extends Database implements DatabaseBaseFunctions {
+  public serverInfo: ServerInfoContainer = new ServerInfoContainer();
+
+  public add(): this {
+    return this;
+  }
+
+  protected loadFromFile(): Object[] {
+    let parsed: Object = {};
+
+    try {
+      parsed = JSON.parse(
+        fs.readFileSync(`./src/database/${this.filename}.json`, {
+          encoding: "utf-8",
+        })
+      );
+    } catch (e) {
+      this.saveToFile<ServerInfoContainer>(this.serverInfo);
+    }
+
+    return [parsed];
+  }
+
+  public load(): this {
+    const object: Object = this.loadFromFile()[0];
+
+    this.serverInfo.setLanguage(lodash.get(object, "language"));
+    this.serverInfo.setMap(lodash.get(object, "map"));
+    this.serverInfo.setLocation(lodash.get(object, "location"));
+    this.serverInfo.setPassword(lodash.get(object, "password"));
+    this.serverInfo.setServername(lodash.get(object, "servername"));
+
+    return this;
+  }
+
+  public remove(): this {
+    return this;
+  }
+
+  public saveToFile<T>(data: T): void {
+    try {
+      fs.writeFileSync(
+        `./src/database/${this.filename}.json`,
+        JSON.stringify(data, null, 2)
+      );
+    } catch (e) {
+      logger.error(e);
+    }
+  }
+
+  public save(): this {
+    this.saveToFile<ServerInfoContainer>(this.serverInfo);
+    return this;
+  }
+}
+
 const registeredUsers = new RegisteredUsers("registeredUsers");
 const idCards = new IdCards("idCards");
 const licensePlates = new LicensePlates("licensePlates");
+const serverInfo = new ServerInfo("serverInfo");
 
 function loadDatabases(): void {
   logger.info("Loading databases...");
   registeredUsers.load();
   idCards.load();
   licensePlates.load();
+  serverInfo.load();
   logger.info("Successfully loaded databases.");
 }
 
-export { registeredUsers, idCards, licensePlates, loadDatabases };
+export { registeredUsers, idCards, licensePlates, serverInfo, loadDatabases };
