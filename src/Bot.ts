@@ -131,6 +131,15 @@ client.on("messageCreate", (message) => {
 
 client.on("interactionCreate", (interaction: Interaction) => {
   if (interaction.isCommand()) {
+    if (!interaction.guild) {
+      interaction.reply("Dieser Bot ist in DMs deaktiviert!");
+      return;
+    }
+    if (!interaction.channel) {
+      interaction.reply("Du scheinst dich in keinem Text Kanal zu befinden!");
+      return;
+    }
+
     logger.info(`${interaction.user.tag} called /${interaction.commandName}`);
 
     for (const command of commands) {
