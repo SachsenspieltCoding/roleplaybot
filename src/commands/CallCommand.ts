@@ -50,7 +50,7 @@ const CallCommand: Command = {
 
     if (!caller.voice.channel || !target.voice.channel) {
       await interaction.editReply(
-        "Du und dein Ziel musst dich in einem VoiceChannel befinden um jemanden anzurufen!"
+        "Du und dein Gesprächspartner musst dich in einem VoiceChannel befinden um jemanden anzurufen!"
       );
       return;
     } else if (
@@ -58,7 +58,7 @@ const CallCommand: Command = {
       target.voice.channel instanceof StageChannel
     ) {
       await interaction.editReply(
-        "Du und dein Ziel musst dich in einem VoiceChannel befinden um jemanden anzurufen!"
+        "Du und dein Gesprächspartner musst dich in einem VoiceChannel befinden um jemanden anzurufen!"
       );
       return;
     }
@@ -70,6 +70,13 @@ const CallCommand: Command = {
 
     if (targetUser.bot) {
       await interaction.editReply("Du kannst keine Bots anrufen!");
+      return;
+    }
+
+    if (caller.voice.channel.id === target.voice.channel.id) {
+      await interaction.editReply(
+        "Du bist bereits mit deinem Gesprächspartner in einem VoiceChannel!"
+      );
       return;
     }
 

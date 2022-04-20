@@ -117,7 +117,7 @@ class Call {
   }
 
   public declineCall(): void {
-    this.accepted = false;
+    this.accepted = true;
 
     const callerEmbed = new MessageEmbed({
       title: "Anruf abgelehnt",
@@ -150,14 +150,14 @@ class Call {
       embeds: [targetEmbed],
       components: [],
     });
+
+    calls.remove(this);
   }
 
   public endCall(): void {
-    this.accepted = false;
+    this.accepted = true;
 
-    const duration = Math.floor(
-      (new Date().getTime() - this.startedAt.getTime()) / 1000
-    );
+    const duration = new Date(new Date().getTime() - this.startedAt.getTime());
 
     if (this.caller.voice.channel) {
       try {
@@ -179,7 +179,9 @@ class Call {
       fields: [
         {
           name: "Dauer",
-          value: `${duration} Sekunden`,
+          value: `${
+            duration.getHours() - 1
+          } Stunden ${duration.getMinutes()} Minuten ${duration.getSeconds()} Sekunden`,
         },
       ],
     });
@@ -201,7 +203,9 @@ class Call {
       fields: [
         {
           name: "Dauer",
-          value: `${duration} Sekunden`,
+          value: `${
+            duration.getHours() - 1
+          } Stunden ${duration.getMinutes()} Minuten ${duration.getSeconds()} Sekunden`,
         },
       ],
     });
@@ -215,11 +219,9 @@ class Call {
   }
 
   public endCallNotAccepted(): void {
-    this.accepted = false;
+    this.accepted = true;
 
-    const duration = Math.floor(
-      (new Date().getTime() - this.startedAt.getTime()) / 1000
-    );
+    const duration = new Date(new Date().getTime() - this.startedAt.getTime());
 
     if (this.caller.voice.channel) {
       try {
@@ -241,7 +243,9 @@ class Call {
       fields: [
         {
           name: "Dauer",
-          value: `${duration} Sekunden`,
+          value: `${
+            duration.getHours() - 1
+          } Stunden ${duration.getMinutes()} Minuten ${duration.getSeconds()} Sekunden`,
         },
       ],
     });
