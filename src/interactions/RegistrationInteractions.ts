@@ -49,7 +49,7 @@ async function allowInteraction(interaction: ButtonInteraction): Promise<void> {
     fields: [
       {
         name: "Discord-User",
-        value: `<@${interaction.user.id}>`,
+        value: `<@${registration.userid}>`,
       },
       {
         name: "Vorname",
@@ -140,7 +140,7 @@ async function denyInteraction(interaction: ButtonInteraction): Promise<void> {
     fields: [
       {
         name: "Discord-User",
-        value: `<@${interaction.user.id}>`,
+        value: `<@${registration.userid}>`,
       },
       {
         name: "Vorname",
