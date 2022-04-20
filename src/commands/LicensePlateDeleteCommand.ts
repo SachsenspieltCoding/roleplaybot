@@ -27,7 +27,7 @@ const LicensePlateDelete: Command = {
     },
   ],
   execute: async (client: Client, interaction: BaseCommandInteraction) => {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
 
     if (!interaction.memberPermissions?.has(Permissions.FLAGS.ADMINISTRATOR)) {
       await interaction.editReply(

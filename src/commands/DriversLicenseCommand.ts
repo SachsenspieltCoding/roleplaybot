@@ -49,7 +49,7 @@ const DriversLicense: Command = {
     {
       type: ApplicationCommandOptionTypes.BOOLEAN,
       name: "bool",
-      description: "Soll die Füherscheinklasse gelöscht werden?",
+      description: "Soll die Führerscheinklasse gelöscht werden?",
     },
   ],
   execute: async (client: Client, interaction: BaseCommandInteraction) => {

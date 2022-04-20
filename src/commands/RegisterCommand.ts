@@ -67,7 +67,7 @@ const Register: Command = {
     const serverEmbed: MessageEmbed = new MessageEmbed({
       title: "Roleplay Anmeldung erfolgt!",
       description:
-        "Du wurdest nun erfolgreich für das Roleplay registriert! In deinen DM's findest du deine Registrierung nochmal. Sobald die Serverleitung dich freigibt, erhälst du Zugang zum Passwort des Servers.",
+        "Du wurdest nun erfolgreich für das Roleplay registriert! In deinen DM's findest du deine Registrierung nochmal. Sobald die Serverleitung dich freigibt, erhältst du Zugang zum Passwort des Servers.",
       footer: {
         text: interaction.guild?.name,
         iconURL: client.user?.displayAvatarURL(),
