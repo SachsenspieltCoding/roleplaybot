@@ -68,6 +68,7 @@ client.on("ready", (): void => {
 });
 
 client.on("guildMemberAdd", (member: GuildMember): void => {
+  if (member.user.id === client.user?.id) return;
   const embed: MessageEmbed = new MessageEmbed({
     title: "Herzlich Willkommen!",
     description: `Der User ${member.user.tag} ist gerade in ${member.guild.name} eingeflogen!`,
@@ -90,6 +91,7 @@ client.on("guildMemberAdd", (member: GuildMember): void => {
 });
 
 client.on("guildMemberRemove", (member): void => {
+  if (member.user.id === client.user?.id) return;
   const embed: MessageEmbed = new MessageEmbed({
     title: "Schade, dass du gehst :(",
     description: `Der User ${member.user.tag} hat soeben ${member.guild.name} verlassen!`,
@@ -112,6 +114,7 @@ client.on("guildMemberRemove", (member): void => {
 });
 
 client.on("messageCreate", (message) => {
+  if (message.author.bot) return;
   if (message.channel instanceof TextChannel) {
     if (message.channel.topic?.includes("!PASSBILD")) {
       if (message.attachments.size > 0) {
