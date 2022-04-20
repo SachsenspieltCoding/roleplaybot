@@ -7,6 +7,7 @@ import { randomUUID } from "crypto";
 import { DriversLicense } from "./class/DriversLicense";
 import { LicensePlate } from "./class/LicensePlate";
 import { ServerInfoContainer } from "./class/ServerInfoContainer";
+import { Call } from "./class/Call";
 
 class Database {
   protected filename: string = "";
@@ -301,10 +302,37 @@ class ServerInfo extends Database implements DatabaseBaseFunctions {
   }
 }
 
+class Calls extends Database {
+  private calls: Call[] = [];
+
+  public add(...calls: Call[]): this {
+    for (const call of calls) {
+      this.calls.push(call);
+    }
+    return this;
+  }
+
+  public get(id: string): Call {
+    return this.calls.filter((c) => c.id === id)[0];
+  }
+
+  public getAll(): Call[] {
+    return this.calls;
+  }
+
+  public remove(...calls: Call[]): this {
+    for (const call of calls) {
+      this.calls = this.calls.filter((c) => c.id !== call.id);
+    }
+    return this;
+  }
+}
+
 const registeredUsers = new RegisteredUsers("registeredUsers");
 const idCards = new IdCards("idCards");
 const licensePlates = new LicensePlates("licensePlates");
 const serverInfo = new ServerInfo("serverInfo");
+const calls = new Calls("calls");
 
 function loadDatabases(): void {
   logger.info("Loading databases...");
@@ -315,4 +343,11 @@ function loadDatabases(): void {
   logger.info("Successfully loaded databases.");
 }
 
-export { registeredUsers, idCards, licensePlates, serverInfo, loadDatabases };
+export {
+  registeredUsers,
+  idCards,
+  licensePlates,
+  serverInfo,
+  calls,
+  loadDatabases,
+};

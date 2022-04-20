@@ -55,6 +55,10 @@ class RegisteredUser {
   public setFinished(): void {
     this.pending = false;
   }
+
+  public getFullName(): string {
+    return `${this.firstname} ${this.lastname}`;
+  }
 }
 
 export { OwnerMessage, RegisteredUser };

@@ -19,12 +19,19 @@ import * as CONFIG from "./config.json";
 import commands from "./CommandIndex";
 import { loadDatabases } from "./Database";
 import { interactionReceived } from "./ButtonInteractionManager";
+import { checkCall } from "./class/Call";
 
 //------------------------------------------------------------------------------
 // Init Dotenv & Discord.js
 //------------------------------------------------------------------------------
 const client: Client = new Client({
-  intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_MESSAGES", "GUILD_PRESENCES"],
+  intents: [
+    "GUILDS",
+    "GUILD_MEMBERS",
+    "GUILD_MESSAGES",
+    "GUILD_PRESENCES",
+    "GUILD_VOICE_STATES",
+  ],
 });
 const rest: REST = new REST({ version: "9" }).setToken(CONFIG.BOT_TOKEN);
 
@@ -153,6 +160,10 @@ client.on("interactionCreate", (interaction: Interaction) => {
   } else if (interaction.isButton()) {
     interactionReceived(interaction);
   }
+});
+
+client.on("voiceStateUpdate", (oldVoiceState, newVoiceState) => {
+  checkCall(oldVoiceState, newVoiceState);
 });
 
 //------------------------------------------------------------------------------
