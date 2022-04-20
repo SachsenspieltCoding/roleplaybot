@@ -163,6 +163,10 @@ const CallCommand: Command = {
     await interaction.editReply(
       "Anruf wurde erfolgreich gestartet, schau in deinen DMs nach für weitere Infos!"
     );
+
+    setTimeout(() => {
+      if (!call.accepted) call.endCallNotAccepted();
+    }, 30 * 1000);
   },
 };
 

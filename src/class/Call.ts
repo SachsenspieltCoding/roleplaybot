@@ -214,6 +214,62 @@ class Call {
     calls.remove(this);
   }
 
+  public endCallNotAccepted(): void {
+    this.accepted = false;
+
+    const duration = Math.floor(
+      (new Date().getTime() - this.startedAt.getTime()) / 1000
+    );
+
+    if (this.caller.voice.channel) {
+      try {
+        this.caller.voice.setChannel(this.callerChannel);
+      } catch (e) {
+        logger.error(e);
+      }
+    }
+
+    const callerEmbed = new MessageEmbed({
+      title: "Anruf beendet",
+      description: `Der Anruf mit ${this.rpTarget} wurde beendet.`,
+      color: "RED",
+      footer: {
+        text: this.caller.guild.name,
+        iconURL: client.user?.displayAvatarURL(),
+      },
+      timestamp: new Date(),
+      fields: [
+        {
+          name: "Dauer",
+          value: `${duration} Sekunden`,
+        },
+      ],
+    });
+
+    this.callerMessage.edit({
+      embeds: [callerEmbed],
+      components: [],
+    });
+
+    const targetEmbed = new MessageEmbed({
+      title: "1 verpasster Anruf",
+      description: `Du hast 1 Anruf von ${this.rpCaller} verpasst.`,
+      color: "RED",
+      footer: {
+        text: this.target.guild.name,
+        iconURL: client.user?.displayAvatarURL(),
+      },
+      timestamp: new Date(),
+    });
+
+    this.targetMessage.edit({
+      embeds: [targetEmbed],
+      components: [],
+    });
+
+    calls.remove(this);
+  }
+
   public endCallError(): void {
     this.callerMessage.reply(
       "Du oder dein Gesprächspartner hat den VoiceChannel verlassen. Der Anruf wurde beendet."
