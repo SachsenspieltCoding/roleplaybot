@@ -1,3 +1,5 @@
+import { ColorResolvable } from "discord.js";
+
 class LicensePlate {
   public city: string;
   public letters: string;
@@ -5,10 +7,13 @@ class LicensePlate {
 
   public registeredAt: Date;
   public authority: string;
+  public type: "NORMAL" | "TAXFREE" | "TEMPORARY" | "AUTHORITY";
+  public color: ColorResolvable;
 
   public vehicle: string;
   public vehicleClass: string;
   public vehicleHorsepower: number;
+
   public ownerFirstname: string;
   public ownerLastname: string;
 
@@ -16,6 +21,8 @@ class LicensePlate {
     city: string,
     letters: string,
     numbers: string,
+    type: "NORMAL" | "TAXFREE" | "TEMPORARY" | "AUTHORITY",
+    color: ColorResolvable,
     vehicle: string,
     vehicleClass: string,
     vehicleHorsepower: number,
@@ -27,6 +34,8 @@ class LicensePlate {
     this.city = city;
     this.letters = letters;
     this.numbers = numbers;
+    this.type = type;
+    this.color = color;
     this.vehicle = vehicle;
     this.vehicleClass = vehicleClass;
     this.vehicleHorsepower = vehicleHorsepower;

@@ -206,6 +206,8 @@ class LicensePlates extends Database implements DatabaseBaseFunctions {
         lodash.get(object, "city"),
         lodash.get(object, "letters"),
         lodash.get(object, "numbers"),
+        lodash.get(object, "type"),
+        lodash.get(object, "color"),
         lodash.get(object, "vehicle"),
         lodash.get(object, "vehicleClass"),
         lodash.get(object, "vehicleHorsepower"),

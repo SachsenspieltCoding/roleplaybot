@@ -1,4 +1,9 @@
-import { BaseCommandInteraction, Client, Permissions } from "discord.js";
+import {
+  BaseCommandInteraction,
+  Client,
+  ColorResolvable,
+  Permissions,
+} from "discord.js";
 import Command from "src/Command";
 import { ApplicationCommandOptionTypes } from "discord.js/typings/enums";
 import { licensePlates } from "../Database";
@@ -40,6 +45,30 @@ const LicensePlateCreate: Command = {
     },
     {
       type: ApplicationCommandOptionTypes.STRING,
+      name: "typ",
+      description: "Der Typ des Kennzeichens",
+      required: true,
+      choices: [
+        {
+          name: "Normal (schwarz)",
+          value: "normal",
+        },
+        {
+          name: "Steuerbefreit (grün)",
+          value: "taxfree",
+        },
+        {
+          name: "Überführungs- und Händlerkennzeichen (rot)",
+          value: "temp",
+        },
+        {
+          name: "Behördenkennzeichen (schwarz)",
+          value: "authority",
+        },
+      ],
+    },
+    {
+      type: ApplicationCommandOptionTypes.STRING,
       name: "fahrzeug",
       description: "Das Fahrzeug, welches Zugelassen wird",
       required: true,
@@ -73,6 +102,10 @@ const LicensePlateCreate: Command = {
         {
           name: "L-Fahrzeugklasse",
           value: "l",
+        },
+        {
+          name: "keine Fahrzeugklasse (Übergangskennzeichen)",
+          value: "/",
         },
       ],
     },
@@ -110,6 +143,7 @@ const LicensePlateCreate: Command = {
     const numbers = (
       interaction.options.get("zahlen")?.value as string
     ).toUpperCase();
+    const typeFromOption = interaction.options.get("typ")?.value as string;
     const vehicle = interaction.options.get("fahrzeug")?.value as string;
     const vehicleClass = interaction.options.get("fahrzeugklasse")
       ?.value as string;
@@ -128,10 +162,38 @@ const LicensePlateCreate: Command = {
       return;
     }
 
+    let color: ColorResolvable;
+    let type: "NORMAL" | "TAXFREE" | "TEMPORARY" | "AUTHORITY";
+
+    switch (typeFromOption) {
+      case "normal":
+        type = "NORMAL";
+        color = "DARK_BUT_NOT_BLACK";
+        break;
+      case "taxfree":
+        type = "TAXFREE";
+        color = "GREEN";
+        break;
+      case "temp":
+        type = "TEMPORARY";
+        color = "RED";
+        break;
+      case "authority":
+        type = "AUTHORITY";
+        color = "NOT_QUITE_BLACK";
+        break;
+      default:
+        type = "NORMAL";
+        color = "DARK_BUT_NOT_BLACK";
+        break;
+    }
+
     const plate = new LicensePlate(
       city,
       letters,
       numbers,
+      type,
+      color,
       vehicle,
       vehicleClass.toUpperCase(),
       vehicleHorsepower,

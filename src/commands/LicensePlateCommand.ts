@@ -70,12 +70,37 @@ const Kennzeichen: Command = {
       return;
     }
 
+    let platetype = "Unbekannt";
+
+    switch (plate.type) {
+      case "NORMAL":
+        platetype = "Normal";
+        break;
+
+      case "TAXFREE":
+        platetype = "Steuerbefreit";
+        break;
+
+      case "TEMPORARY":
+        platetype = "Übergangs- und Probefahrt";
+        break;
+
+      case "AUTHORITY":
+        platetype = "Behörde";
+        break;
+    }
+
     const embed = new MessageEmbed({
       title: "KENNZEICHENAUSKUNFT",
+      color: plate.color,
       fields: [
         {
           name: "Kennzeichen",
           value: plate.getLicensePlateString(),
+        },
+        {
+          name: "Kennzeichen-Typ",
+          value: platetype,
         },
         {
           name: "zugelassenes Fahrzeug",
@@ -110,7 +135,6 @@ const Kennzeichen: Command = {
           inline: true,
         },
       ],
-      color: "DARK_GREEN",
     });
 
     await interaction.editReply({ embeds: [embed] });
