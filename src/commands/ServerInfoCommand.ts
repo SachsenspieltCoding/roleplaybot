@@ -54,6 +54,11 @@ const ServerInfo: Command = {
           inline: true,
         },
         {
+          name: "‎",
+          value: "‎",
+          inline: true,
+        },
+        {
           name: "Serverstandort",
           value: serverinfo.getLocation(),
           inline: true,
