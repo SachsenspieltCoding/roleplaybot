@@ -146,7 +146,10 @@ client.on("interactionCreate", (interaction: Interaction) => {
       return;
     }
     if (!interaction.channel) {
-      interaction.reply("Du scheinst dich in keinem Text Kanal zu befinden!");
+      interaction.reply({
+        content: "Du scheinst dich in keinem Text Kanal zu befinden!",
+        ephemeral: true,
+      });
       return;
     }
 
@@ -154,11 +157,19 @@ client.on("interactionCreate", (interaction: Interaction) => {
 
     for (const command of commands) {
       if (command.name === interaction.commandName) {
-        command.execute(client, interaction);
+        command.execute(client, interaction).catch((e) => {
+          interaction.channel?.send({
+            content: "Ein interner Fehler ist aufgetreten\n```" + e + "```",
+          });
+        });
       }
     }
   } else if (interaction.isButton()) {
-    interactionReceived(interaction);
+    interactionReceived(interaction).catch((e) => {
+      interaction.channel?.send({
+        content: "Ein interner Fehler ist aufgetreten\n```" + e + "```",
+      });
+    });
   }
 });
 
